@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script src="ext/gl-matrix.js"></script>
+		<script src="vertexData_sphere.js"></script>
+		<script src="vertexData_torus.js"></script>
+		<script src="vertexData_plane.js"></script>
+		<script src="app.js"></script>
+		<script type="x-shader/x-vertex" id="vertexshader">
+
+                attribute vec3 aPosition;
+                attribute vec3 aNormal;
+
+                uniform mat4 uPMatrix;
+                uniform mat4 uMVMatrix;
+
+                // Normal-Matrix.
+                uniform mat3 uNMatrix;
+
+                // Farbe des jeweiligen Modells.
+                uniform vec4 uColor;
+                varying vec4 vColor;
+                void main() {
+
+                    // Vertex transformieren.
+                    gl_Position =
+                        uPMatrix *
+                        uMVMatrix *
+                        vec4(aPosition, 1.0);
+
+                    // Normale passend zum Modell transformieren.
+                    vec3 tNormal =
+                        uNMatrix * aNormal;
+
+                    // Z-Komponente der Normalen als Schattierung.
+                    vColor =
+                        vec4(
+                            tNormal.z,
+                            tNormal.z,
+                            tNormal.z,
+                            1.0
+                        );
+
+                    // Modellfarbe mit Schattierung kombinieren.
+                    vColor =
+                        uColor *
+                        (vColor + 1.0) / 2.0;
+                }
+
+		</script>
+		<script type="x-shader/x-fragment" id="fragmentshader">
+			precision mediump float;
+			varying vec4 vColor;
+
+			void main() {
+			gl_FragColor = vColor;
+			}
+		</script>
+	</head>
+	<body onload="app.start()">
+
+	<h2>EA 6: Objekte bewegen - fliegende Kugeln</h2>
+
+	<canvas id="canvas" width="500" height="500"></canvas>
+	<p><strong>K:</strong> Kugeln auf ihren Kreisbahnen weiterbewegen</p>
+	<p><strong>T:</strong> Kugeln und Torus synchron animieren</p>
+	<p><strong>C:</strong> Kamera um die Szene bewegen</p>
+	<p><strong>Shift + C:</strong> Kamera in Gegenrichtung bewegen</p>
+
+	<h2>Beschreibung</h2>
+
+	<p>
+		Vier Kugeln bewegen sich auf einer Kreisbahn durch den Torus.
+		Die Kugeln sind um jeweils 90 Grad versetzt, sodass sie sich während der Bewegung nicht berühren.
+	</p>
+
+	<h2>Quellen</h2>
+
+	<ul>
+		<li>
+			Loop-Vorlesungsskript Graphical Visualisation Technologies, Prof.
+			Dr. Felix Gers
+		</li>
+		<li>
+
+		</li>
+		<li>
+			<strong>Hinweis zur Nutzung generativer KI:</strong> Bei der
+			Bearbeitung dieser Aufgabe wurde ChatGPT als
+			unterstützendes Werkzeug genutzt. Es diente der Erläuterung
+			fachlicher Konzepte, der Unterstützung bei der Fehlersuche sowie der
+			Generierung und Diskussion von Lösungs- und Codevorschlägen.
+			Sämtliche übernommenen Inhalte wurden von mir nachvollzogen,
+			angepasst und auf ihre Funktionalität geprüft.
+		</li>
+	</ul>
+	</body>
+</html>
